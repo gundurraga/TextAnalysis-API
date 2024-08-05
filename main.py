@@ -1,7 +1,15 @@
-from fastapi import FastAPI
+from app.services.text_analysis_service import TextAnalysisService
 from pydantic import BaseModel
+from fastapi import FastAPI
+import sys
+from pathlib import Path
+
+# Añade el directorio raíz del proyecto al path de Python
+sys.path.append(str(Path(__file__).parent))
+
 
 app = FastAPI()
+text_analysis_service = TextAnalysisService()
 
 
 class TextRequest(BaseModel):
@@ -15,8 +23,7 @@ async def root():
 
 @app.post("/analyze")
 async def analyze_text(request: TextRequest):
-    # Por ahora, simplemente devolveremos la longitud del texto
-    return {"text_length": len(request.text)}
+    return text_analysis_service.analyze_text(request.text)
 
 if __name__ == "__main__":
     import uvicorn
