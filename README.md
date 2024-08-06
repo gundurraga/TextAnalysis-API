@@ -10,6 +10,10 @@ TextAnalysis API is an open-source project that provides advanced natural langua
 - Named Entity Recognition
 - Text Summarization (for longer texts)
 
+## Model
+
+This project uses the TinyLlama/TinyLlama-1.1B-Chat-v1.0 model, a compact yet powerful language model suitable for various NLP tasks.
+
 ## Project Structure
 
 ```mermaid
@@ -63,17 +67,10 @@ The API returns a JSON object with the following structure:
 ```json
 {
   "text_length": 123,
-  "language": "en",
-  "language_confidence": 0.98,
+  "language": "English",
   "sentiment": "POSITIVE",
-  "sentiment_confidence": 0.85,
   "is_offensive": false,
-  "offensive_confidence": 0.95,
-  "entities": {
-    "PER": ["John Doe"],
-    "ORG": ["Acme Corp"],
-    "LOC": ["New York"]
-  },
+  "entities": ["John Doe", "Acme Corp", "New York"],
   "summary": "A brief summary of the text (for longer inputs)"
 }
 ```
