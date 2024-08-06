@@ -6,12 +6,15 @@ class TextAnalysisService:
         self.nlp_model = NLPModel()
 
     def analyze_text(self, text):
-        language_info = self.nlp_model.detect_language(text)
-        sentiment_info = self.nlp_model.analyze_sentiment(text)
-        return {
+        analysis = {
             "text_length": len(text),
-            "language": language_info["detected_language"],
-            "language_confidence": language_info["confidence"],
-            "sentiment": sentiment_info["sentiment"],
-            "sentiment_confidence": sentiment_info["confidence"]
+            "language": self.nlp_model.detect_language(text),
+            "sentiment": self.nlp_model.analyze_sentiment(text),
+            "is_offensive": self.nlp_model.detect_offensive_language(text),
+            "entities": self.nlp_model.extract_entities(text)
         }
+
+        if len(text.split()) > 100:
+            analysis["summary"] = self.nlp_model.summarize_text(text)
+
+        return analysis
