@@ -6,16 +6,17 @@ class TextAnalysisService:
         self.nlp_model = NLPModel()
 
     def analyze_text(self, text):
+        if not text.strip():
+            raise ValueError("Empty text is not allowed")
+
         analysis = {
             "text_length": len(text),
             "language": self.nlp_model.detect_language(text),
             "sentiment": self.nlp_model.analyze_sentiment(text),
             "is_offensive": self.nlp_model.detect_offensive_language(text),
-            "entities": self.nlp_model.extract_entities(text)
+            "entities": self.nlp_model.extract_entities(text),
+            # Always include summary
+            "summary": self.nlp_model.summarize_text(text)
         }
-
-        # Add summarization for texts longer than 100 words
-        if len(text.split()) > 100:
-            analysis["summary"] = self.nlp_model.summarize_text(text)
 
         return analysis

@@ -15,7 +15,7 @@ class NLPModel:
         try:
             # Sentiment Analysis
             self.sentiment_model = pipeline(
-                "sentiment-analysis", model="distilbert-base-uncased-finetuned-sst-2-english")
+                "sentiment-analysis", model="distilbert-base-uncased-finetuned-sst-2-english", max_length=512, truncation=True)
 
             # Named Entity Recognition
             self.nlp = spacy.load("en_core_web_sm")
@@ -26,7 +26,7 @@ class NLPModel:
             raise
 
         self.offensive_words = {
-            "shit", "motherfucker", "fuck", "bitch", "asshole"
+            "shit", "fuck", "bitch", "asshole", "motherfucker"
         }
 
     def detect_language(self, text: str) -> str:
@@ -40,10 +40,12 @@ class NLPModel:
         return {result['label'].lower(): result['score']}
 
     def detect_offensive_language(self, text: str) -> bool:
-        return any(word in text.lower() for word in self.offensive_words)
+        return any(word in text.lower().split() for word in self.offensive_words)
 
     def extract_entities(self, text: str) -> List[Dict[str, str]]:
-        doc = self.nlp(text)
+        # Truncate text to 1,000,000 characters to avoid potential issues with very long texts
+        truncated_text = text[:1000000]
+        doc = self.nlp(truncated_text)
         entities = [{"name": ent.text, "type": ent.label_} for ent in doc.ents]
         return entities
 
