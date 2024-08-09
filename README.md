@@ -1,6 +1,6 @@
 # TextAnalysis API
 
-TextAnalysis API is an open-source project that provides advanced natural language processing capabilities through a simple API. Built with Python, FastAPI, and Hugging Face Transformers, it offers a range of text analysis features for developers and researchers.
+TextAnalysis API is an open-source project that provides natural language processing capabilities through a simple, self-hosted API. Built with Python, FastAPI, and various NLP libraries, it offers a range of text analysis features for developers and researchers. This project aims to provide a free, open-source alternative to commercial NLP services.
 
 ## Features
 
@@ -10,9 +10,12 @@ TextAnalysis API is an open-source project that provides advanced natural langua
 - Named Entity Recognition
 - Text Summarization (for longer texts)
 
-## Model
+## Technology Stack
 
-This project uses the TinyLlama/TinyLlama-1.1B-Chat-v1.0 model, a compact yet powerful language model suitable for various NLP tasks.
+- FastAPI for the API framework
+- spaCy for Named Entity Recognition
+- Hugging Face Transformers (DistilBERT) for Sentiment Analysis
+- langdetect for Language Detection
 
 ## Project Structure
 
@@ -42,6 +45,7 @@ graph TD
 
    ```
    pip install -r requirements.txt
+   python -m spacy download en_core_web_sm
    ```
 
 3. Run the API:
@@ -68,23 +72,38 @@ The API returns a JSON object with the following structure:
 {
   "text_length": 123,
   "language": "English",
-  "sentiment": "POSITIVE",
+  "sentiment": { "positive": 0.95 },
   "is_offensive": false,
-  "entities": ["John Doe", "Acme Corp", "New York"],
+  "entities": [
+    { "name": "John Doe", "type": "PERSON" },
+    { "name": "New York", "type": "GPE" }
+  ],
   "summary": "A brief summary of the text (for longer inputs)"
 }
 ```
 
-## Goals
+## Project Goals
 
-1. Enhance model accuracy and performance
-2. Add support for more languages
-3. Implement text classification for topics/categories
-4. Develop a user-friendly web interface for API testing
+1. Provide a free, open-source alternative to commercial NLP services
+2. Focus on high-quality results while maintaining good performance
+3. Support self-hosting with potential for online demo in the future
+4. Prioritize security following OWASP guidelines
+
+## Roadmap
+
+- Improve and stabilize current features
+- Add support for more languages (French, Spanish, Portuguese, Italian)
+- Implement rate limiting and usage tracking for potential online demo
+- Develop a web interface for easy testing (long-term goal)
+- Continuously improve performance and response times
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please feel free to submit a Pull Request. We're particularly interested in contributions that improve the quality of results, enhance performance, or add support for new languages.
+
+## Security
+
+We take security seriously. While we're continuously working to improve our security measures, we encourage users to report any security vulnerabilities they find. We aim to follow OWASP security guidelines where applicable.
 
 ## License
 
