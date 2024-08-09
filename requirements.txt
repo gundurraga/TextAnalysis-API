@@ -4,3 +4,7 @@ pydantic==2.8.2
 transformers==4.43.4
 torch==2.4.0
 accelerate==0.33.0
+langdetect==1.0.9
+sentencepiece==0.2.0
+protobuf==4.25.3
+spacy==3.7.4

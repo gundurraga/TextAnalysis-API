@@ -163,5 +163,5 @@ cython_debug/
 
 requirements-dev.txt
 repo_concatenate.py
-TextAnalysis_API.txt
+TextAnalysis-API.txt
 project_manifest.txt

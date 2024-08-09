@@ -14,6 +14,7 @@ class TextAnalysisService:
             "entities": self.nlp_model.extract_entities(text)
         }
 
+        # Add summarization for texts longer than 100 words
         if len(text.split()) > 100:
             analysis["summary"] = self.nlp_model.summarize_text(text)
 
