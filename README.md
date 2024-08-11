@@ -1,6 +1,6 @@
 # TextAnalysis API
 
-TextAnalysis API is an open-source project that provides natural language processing capabilities through a simple, self-hosted API. Built with Python, FastAPI, and various NLP libraries, it offers a range of text analysis features for developers and researchers. This project aims to provide a free, open-source alternative to commercial NLP services.
+TextAnalysis API is a robust, Python-based API for natural language processing tasks. It provides endpoints for text analysis including language detection, sentiment analysis, offensive language detection, named entity recognition, and text summarization.
 
 ## Features
 
@@ -8,36 +8,23 @@ TextAnalysis API is an open-source project that provides natural language proces
 - Sentiment Analysis
 - Offensive Language Detection
 - Named Entity Recognition
-- Text Summarization (for longer texts)
+- Text Summarization
+- Input validation and error handling
 
-## Technology Stack
+## Requirements
 
-- FastAPI for the API framework
-- spaCy for Named Entity Recognition
-- Hugging Face Transformers (DistilBERT) for Sentiment Analysis
-- langdetect for Language Detection
+- Python 3.8+
+- FastAPI
+- Pydantic
+- Uvicorn
+- Other dependencies listed in `requirements.txt`
 
-## Project Structure
-
-```mermaid
-graph TD
-    A[main.py] --> B[app/]
-    B --> C[api/]
-    B --> D[core/]
-    B --> E[models/]
-    B --> F[services/]
-    C --> G[endpoints/]
-    G --> H[text_analysis.py]
-    E --> I[nlp_model.py]
-    F --> J[text_analysis_service.py]
-```
-
-## Getting Started
+## Setup
 
 1. Clone the repository:
 
    ```
-   git clone https://github.com/gundurraga/TextAnalysis-API.git
+   git clone https://github.com/yourusername/TextAnalysis-API.git
    cd TextAnalysis-API
    ```
 
@@ -45,66 +32,109 @@ graph TD
 
    ```
    pip install -r requirements.txt
-   python -m spacy download en_core_web_sm
    ```
 
 3. Run the API:
    ```
-   python main.py
+   uvicorn main:app --reload
    ```
+
+The API will be available at `http://localhost:8000`.
 
 ## Usage
 
-Send a POST request to `/analyze` with your text:
+Send a POST request to the `/analyze` endpoint with your text:
 
 ```python
 import requests
 
-response = requests.post('http://localhost:8000/analyze', json={'text': 'Your text here'})
+response = requests.post('http://localhost:8000/analyze',
+                         json={'text': 'Your text here'})
 print(response.json())
 ```
 
-## Response Format
-
-The API returns a JSON object with the following structure:
+### Example Response
 
 ```json
 {
-  "text_length": 123,
-  "language": "English",
-  "sentiment": { "positive": 0.95 },
+  "text_length": 13,
+  "language": "en",
+  "sentiment": { "positive": 0.9998 },
   "is_offensive": false,
-  "entities": [
-    { "name": "John Doe", "type": "PERSON" },
-    { "name": "New York", "type": "GPE" }
-  ],
-  "summary": "A brief summary of the text (for longer inputs)"
+  "entities": [{ "name": "Your", "type": "PRON" }],
+  "summary": "Your text here"
 }
 ```
 
-## Project Goals
+### Input Constraints
 
-1. Provide a free, open-source alternative to commercial NLP services
-2. Focus on high-quality results while maintaining good performance
-3. Support self-hosting with potential for online demo in the future
-4. Prioritize security following OWASP guidelines
+- The input text must be between 1 and 10,000 characters long.
+- Empty strings or strings containing only whitespace are not allowed.
 
-## Roadmap
+## Error Handling
 
-- Improve and stabilize current features
-- Add support for more languages (French, Spanish, Portuguese, Italian)
-- Implement rate limiting and usage tracking for potential online demo
-- Develop a web interface for easy testing (long-term goal)
-- Continuously improve performance and response times
+The API returns appropriate HTTP status codes for different scenarios:
+
+- 200: Successful analysis
+- 400: Bad request (e.g., empty input, input too long)
+- 500: Unexpected server error
+
+Error responses include a JSON body with a `detail` field explaining the error.
+
+## API Documentation
+
+For full API documentation, visit `http://localhost:8000/docs` after starting the server.
+
+## Running Tests
+
+To run the test suite:
+
+```
+pytest
+```
+
+## Limitations and Areas for Improvement
+
+While the TextAnalysis API provides useful functionality, it's important to be aware of its current limitations and areas that could be improved:
+
+1. Language Support: The API currently has limited support for languages other than English. Accuracy may vary significantly for non-English texts.
+
+2. Model Size and Performance: The current models used are relatively small for the sake of speed and resource efficiency. This can impact the accuracy of results, especially for more nuanced tasks.
+
+3. Context Understanding: The API processes each request independently and doesn't maintain context between requests. This limits its ability to understand context in longer conversations or documents split across multiple requests.
+
+4. Scalability: The current implementation may face challenges with high concurrent loads. Further optimization and possibly a more scalable architecture could be beneficial for production use.
+
+5. Privacy and Data Handling: The API doesn't currently implement any data retention policies or privacy features. This should be addressed for use cases involving sensitive information.
+
+6. Customization: There's currently no way for users to fine-tune models or customize the analysis for specific domains or use cases.
+
+7. Bias in Models: Like many NLP models, our current implementation may exhibit biases present in its training data. This is particularly relevant for sentiment analysis and offensive language detection.
+
+8. Limited Offensive Language Detection: The current implementation of offensive language detection is basic and may miss nuanced or context-dependent offensive content.
+
+9. Summarization Limitations: The text summarization feature is currently based on simple statistical methods and may not capture the most important information for all types of texts.
+
+10. Lack of Confidence Scores: Apart from sentiment analysis, other features don't provide confidence scores, which could be useful for users to gauge the reliability of the results.
+
+These limitations present opportunities for future improvements. Contributions addressing any of these areas are particularly welcome!
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request. We're particularly interested in contributions that improve the quality of results, enhance performance, or add support for new languages.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-## Security
-
-We take security seriously. While we're continuously working to improve our security measures, we encourage users to report any security vulnerabilities they find. We aim to follow OWASP security guidelines where applicable.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- FastAPI for the excellent API framework
+- Hugging Face for transformer models
+- spaCy for NLP tools
