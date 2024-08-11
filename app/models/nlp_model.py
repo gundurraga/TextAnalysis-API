@@ -1,9 +1,10 @@
 import logging
-from typing import List, Dict
+from typing import List, Dict, Any
 from transformers import pipeline
 from langdetect import detect, DetectorFactory
 import spacy
 from sklearn.feature_extraction.text import TfidfVectorizer
+from functools import lru_cache
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -41,16 +42,19 @@ class NLPModel:
             logger.error(f"Error loading NLP models: {str(e)}")
             raise
 
+    @lru_cache(maxsize=100)
     def detect_language(self, text: str) -> str:
         try:
             return detect(text)
         except:
             return "unknown"
 
+    @lru_cache(maxsize=100)
     def analyze_sentiment(self, text: str) -> Dict[str, float]:
         result = self.sentiment_model(text)[0]
         return {result['label'].lower(): result['score']}
 
+    @lru_cache(maxsize=100)
     def detect_offensive_language(self, text: str) -> bool:
         result = self.toxicity_model(text)[0]
         return result['label'] == 'toxic' and result['score'] > 0.5

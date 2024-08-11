@@ -1,23 +1,16 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field, field_validator
-from app.services.text_analysis_service import TextAnalysisService
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
+from app.services.text_analysis_service import TextAnalysisService
+from app.models.api_models import TextRequest
 
-app = FastAPI()
+app = FastAPI(
+    title="TextAnalysis API",
+    description="An API for various text analysis tasks including language detection, sentiment analysis, and more.",
+    version="1.0.0",
+)
+
 text_analysis_service = TextAnalysisService()
-
-
-class TextRequest(BaseModel):
-    text: str = Field(..., min_length=1, max_length=10000,
-                      description="Text to analyze")
-
-    @field_validator('text')
-    @classmethod
-    def text_not_empty(cls, v: str) -> str:
-        if not v.strip():
-            raise ValueError('Text cannot be empty or just whitespace')
-        return v
 
 
 @app.exception_handler(RequestValidationError)
@@ -26,6 +19,14 @@ async def validation_exception_handler(request, exc):
         status_code=400,
         content={"detail": str(exc)},
     )
+
+
+@app.get("/health")
+async def health_check():
+    """
+    Perform a health check on the API.
+    """
+    return {"status": "healthy"}
 
 
 @app.post("/analyze")
