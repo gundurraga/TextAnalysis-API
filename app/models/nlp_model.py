@@ -3,6 +3,7 @@ from typing import List, Dict
 from transformers import pipeline
 from langdetect import detect, DetectorFactory
 import spacy
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -15,19 +16,30 @@ class NLPModel:
         try:
             # Sentiment Analysis
             self.sentiment_model = pipeline(
-                "sentiment-analysis", model="distilbert-base-uncased-finetuned-sst-2-english", max_length=512, truncation=True)
+                "sentiment-analysis",
+                model="distilbert-base-uncased-finetuned-sst-2-english",
+                max_length=512,
+                truncation=True
+            )
+
+            # Toxicity Detection
+            self.toxicity_model = pipeline(
+                "text-classification",
+                model="martin-ha/toxic-comment-model",
+                max_length=512,
+                truncation=True
+            )
 
             # Named Entity Recognition
             self.nlp = spacy.load("en_core_web_sm")
+
+            # TF-IDF Vectorizer for text summarization
+            self.tfidf_vectorizer = TfidfVectorizer(stop_words='english')
 
             logger.info("NLP models loaded successfully.")
         except Exception as e:
             logger.error(f"Error loading NLP models: {str(e)}")
             raise
-
-        self.offensive_words = {
-            "shit", "fuck", "bitch", "asshole", "motherfucker"
-        }
 
     def detect_language(self, text: str) -> str:
         try:
@@ -40,7 +52,8 @@ class NLPModel:
         return {result['label'].lower(): result['score']}
 
     def detect_offensive_language(self, text: str) -> bool:
-        return any(word in text.lower().split() for word in self.offensive_words)
+        result = self.toxicity_model(text)[0]
+        return result['label'] == 'toxic' and result['score'] > 0.5
 
     def extract_entities(self, text: str) -> List[Dict[str, str]]:
         # Truncate text to 1,000,000 characters to avoid potential issues with very long texts
@@ -54,12 +67,17 @@ class NLPModel:
         if len(sentences) <= max_sentences:
             return text
 
-        # Simple extractive summarization
-        word_counts = [len(sentence.split()) for sentence in sentences]
-        avg_word_count = sum(word_counts) / len(word_counts)
+        # Calculate TF-IDF scores
+        tfidf_matrix = self.tfidf_vectorizer.fit_transform(sentences)
+        sentence_scores = tfidf_matrix.sum(axis=1).A1
 
-        important_sentences = [sentence for sentence, count in zip(
-            sentences, word_counts) if count >= avg_word_count * 0.8]
+        # Get indices of top sentences
+        top_sentence_indices = sentence_scores.argsort()[-max_sentences:][::-1]
 
-        summary = '. '.join(important_sentences[:max_sentences]) + '.'
+        # Sort the indices to maintain original order
+        top_sentence_indices = sorted(top_sentence_indices)
+
+        # Join the top sentences
+        summary = '. '.join([sentences[i].strip()
+                            for i in top_sentence_indices]) + '.'
         return summary

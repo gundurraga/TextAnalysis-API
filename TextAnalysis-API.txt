@@ -1,17 +1,17 @@
 Code Statistics:
-1. Total number of files: 10
-2. Total lines of code: 385
+1. Total number of files: 12
+2. Total lines of code: 461
 3. Lines of code per file type:
    - No extension: 21
    - .txt: 10
    - .md: 181
-   - .py: 173
+   - .py: 249
 4. Number of files per file type:
    - No extension: 1
    - .txt: 1
    - .md: 2
-   - .py: 6
-5. Average file size: 1068.00 bytes
+   - .py: 8
+5. Average file size: 1155.50 bytes
 6. Largest file:
    - Name: README.md
    - Size: 3053 bytes
@@ -45,7 +45,9 @@ TextAnalysis-API/
 ├── main.py
 ├── requirements.txt
 └── tests/
-    └── test_api.py
+    ├── conftest.py
+    ├── test_api.py
+    └── test_nlp_model.py
 
 File Index:
 1. LICENSE
@@ -56,8 +58,10 @@ File Index:
 6. app/models/nlp_model.py
 7. app/api/endpoints/text_analysis.py
 8. app/services/text_analysis_service.py
-9. tests/test_api.py
-10. docs/en/api_reference.md
+9. tests/conftest.py
+10. tests/test_api.py
+11. tests/test_nlp_model.py
+12. docs/en/api_reference.md
 
 
 ================================================================================
@@ -234,15 +238,9 @@ END OF FILE_0003: README.md
 FILE_0004: main.py
 ================================================================================
 
-from app.services.text_analysis_service import TextAnalysisService
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from fastapi import FastAPI
-import sys
-from pathlib import Path
-
-# Añade el directorio raíz del proyecto al path de Python
-sys.path.append(str(Path(__file__).parent))
-
+from app.services.text_analysis_service import TextAnalysisService
 
 app = FastAPI()
 text_analysis_service = TextAnalysisService()
@@ -252,14 +250,12 @@ class TextRequest(BaseModel):
     text: str
 
 
-@app.get("/")
-async def root():
-    return {"message": "Welcome to TextAnalysis API"}
-
-
 @app.post("/analyze")
 async def analyze_text(request: TextRequest):
-    return text_analysis_service.analyze_text(request.text)
+    try:
+        return text_analysis_service.analyze_text(request.text)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 if __name__ == "__main__":
     import uvicorn
@@ -313,7 +309,7 @@ class NLPModel:
         try:
             # Sentiment Analysis
             self.sentiment_model = pipeline(
-                "sentiment-analysis", model="distilbert-base-uncased-finetuned-sst-2-english")
+                "sentiment-analysis", model="distilbert-base-uncased-finetuned-sst-2-english", max_length=512, truncation=True)
 
             # Named Entity Recognition
             self.nlp = spacy.load("en_core_web_sm")
@@ -324,7 +320,7 @@ class NLPModel:
             raise
 
         self.offensive_words = {
-            "shit", "motherfucker", "fuck", "bitch", "asshole"
+            "shit", "fuck", "bitch", "asshole", "motherfucker"
         }
 
     def detect_language(self, text: str) -> str:
@@ -338,10 +334,12 @@ class NLPModel:
         return {result['label'].lower(): result['score']}
 
     def detect_offensive_language(self, text: str) -> bool:
-        return any(word in text.lower() for word in self.offensive_words)
+        return any(word in text.lower().split() for word in self.offensive_words)
 
     def extract_entities(self, text: str) -> List[Dict[str, str]]:
-        doc = self.nlp(text)
+        # Truncate text to 1,000,000 characters to avoid potential issues with very long texts
+        truncated_text = text[:1000000]
+        doc = self.nlp(truncated_text)
         entities = [{"name": ent.text, "type": ent.label_} for ent in doc.ents]
         return entities
 
@@ -402,17 +400,18 @@ class TextAnalysisService:
         self.nlp_model = NLPModel()
 
     def analyze_text(self, text):
+        if not text.strip():
+            raise ValueError("Empty text is not allowed")
+
         analysis = {
             "text_length": len(text),
             "language": self.nlp_model.detect_language(text),
             "sentiment": self.nlp_model.analyze_sentiment(text),
             "is_offensive": self.nlp_model.detect_offensive_language(text),
-            "entities": self.nlp_model.extract_entities(text)
+            "entities": self.nlp_model.extract_entities(text),
+            # Always include summary
+            "summary": self.nlp_model.summarize_text(text)
         }
-
-        # Add summarization for texts longer than 100 words
-        if len(text.split()) > 100:
-            analysis["summary"] = self.nlp_model.summarize_text(text)
 
         return analysis
 
@@ -422,49 +421,150 @@ END OF FILE_0008: app/services/text_analysis_service.py
 
 
 ================================================================================
-FILE_0009: tests/test_api.py
+FILE_0009: tests/conftest.py
 ================================================================================
 
-import requests
-import json
+import os
+import sys
 
+# Get the absolute path of the project root
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
-def test_api(text):
-    url = "http://localhost:8000/analyze"
-    payload = {"text": text}
-    headers = {"Content-Type": "application/json"}
-
-    response = requests.post(url, data=json.dumps(payload), headers=headers)
-    print(f"Input text: {text}")
-    print(json.dumps(response.json(), indent=2))
-    print("-" * 50)
-
-
-def run_tests():
-    test_cases = [
-        "This is a simple English sentence.",
-        "Je suis très heureux aujourd'hui!",
-        "This is a longer text that might need summarization. " * 10,
-        "Apple Inc. is headquartered in Cupertino, California.",
-        "I love this product! It's amazing!",
-        "This movie is terrible. I hated every minute of it.",
-        "This is a f***ing disaster!"
-    ]
-
-    for case in test_cases:
-        test_api(case)
-
-
-if __name__ == "__main__":
-    run_tests()
+# Add the project root to the Python path
+sys.path.insert(0, project_root)
 
 ================================================================================
-END OF FILE_0009: tests/test_api.py
+END OF FILE_0009: tests/conftest.py
 ================================================================================
 
 
 ================================================================================
-FILE_0010: docs/en/api_reference.md
+FILE_0010: tests/test_api.py
+================================================================================
+
+import pytest
+from fastapi.testclient import TestClient
+from main import app
+
+client = TestClient(app)
+
+
+@pytest.mark.parametrize("input_text, expected_keys", [
+    ("This is a simple English sentence.", [
+     "text_length", "language", "sentiment", "is_offensive", "entities", "summary"]),
+    ("Je suis très heureux aujourd'hui!", [
+     "text_length", "language", "sentiment", "is_offensive", "entities", "summary"]),
+    ("This is a longer text that might need summarization. " * 10,
+     ["text_length", "language", "sentiment", "is_offensive", "entities", "summary"]),
+])
+def test_analyze_endpoint(input_text, expected_keys):
+    response = client.post("/analyze", json={"text": input_text})
+    assert response.status_code == 200
+    result = response.json()
+    assert all(key in result for key in expected_keys)
+
+
+def test_empty_text():
+    response = client.post("/analyze", json={"text": ""})
+    assert response.status_code == 400
+    assert "detail" in response.json()
+
+
+def test_long_text():
+    long_text = "This is a test sentence. " * 1000
+    response = client.post("/analyze", json={"text": long_text})
+    assert response.status_code == 200
+    result = response.json()
+    assert "summary" in result
+
+
+def test_offensive_language():
+    response = client.post(
+        "/analyze", json={"text": "This is a fucking disaster!"})
+    assert response.status_code == 200
+    result = response.json()
+    assert result["is_offensive"] == True
+
+
+def test_named_entity_recognition():
+    response = client.post(
+        "/analyze", json={"text": "Apple Inc. is headquartered in Cupertino, California."})
+    assert response.status_code == 200
+    result = response.json()
+    assert len(result["entities"]) > 0
+    assert any(entity["name"] == "Apple Inc." for entity in result["entities"])
+    assert any(entity["name"] == "Cupertino" for entity in result["entities"])
+    assert any(entity["name"] == "California" for entity in result["entities"])
+
+================================================================================
+END OF FILE_0010: tests/test_api.py
+================================================================================
+
+
+================================================================================
+FILE_0011: tests/test_nlp_model.py
+================================================================================
+
+import pytest
+from app.models.nlp_model import NLPModel
+
+
+@pytest.fixture
+def nlp_model():
+    return NLPModel()
+
+
+def test_detect_language(nlp_model):
+    assert nlp_model.detect_language("Hello, world!") == "en"
+    assert nlp_model.detect_language("Bonjour le monde!") == "fr"
+    # Accept either Spanish or Portuguese
+    assert nlp_model.detect_language("Hola mundo!") in ["es", "pt"]
+
+
+def test_analyze_sentiment(nlp_model):
+    positive_result = nlp_model.analyze_sentiment("I love this product!")
+    negative_result = nlp_model.analyze_sentiment("I hate this product!")
+
+    assert "positive" in positive_result
+    assert positive_result["positive"] > 0.5
+    assert "negative" in negative_result
+    assert negative_result["negative"] > 0.5
+
+
+def test_detect_offensive_language(nlp_model):
+    assert nlp_model.detect_offensive_language(
+        "This is a normal sentence.") == False
+    assert nlp_model.detect_offensive_language(
+        "This is a fucking disaster!") == True
+
+
+def test_extract_entities(nlp_model):
+    text = "Apple Inc. is headquartered in Cupertino, California."
+    entities = nlp_model.extract_entities(text)
+
+    assert any(entity["name"] == "Apple Inc." and entity["type"]
+               == "ORG" for entity in entities)
+    assert any(entity["name"] == "Cupertino" and entity["type"]
+               == "GPE" for entity in entities)
+    assert any(entity["name"] == "California" and entity["type"]
+               == "GPE" for entity in entities)
+
+
+def test_summarize_text(nlp_model):
+    long_text = "This is a long text. " * 20 + \
+        "This is an important sentence that should be in the summary."
+    summary = nlp_model.summarize_text(long_text)
+
+    assert len(summary) < len(long_text)
+    assert "important sentence" in summary
+
+================================================================================
+END OF FILE_0011: tests/test_nlp_model.py
+================================================================================
+
+
+================================================================================
+FILE_0012: docs/en/api_reference.md
 ================================================================================
 
 # TextAnalysis API Documentation
@@ -540,6 +640,6 @@ The API will return appropriate HTTP status codes for different types of errors:
 Each error response will include a message explaining the error.
 
 ================================================================================
-END OF FILE_0010: docs/en/api_reference.md
+END OF FILE_0012: docs/en/api_reference.md
 ================================================================================
 

@@ -36,10 +36,15 @@ def test_long_text():
 
 def test_offensive_language():
     response = client.post(
-        "/analyze", json={"text": "This is a fucking disaster!"})
+        "/analyze", json={"text": "You are an motherfucker!"})
     assert response.status_code == 200
     result = response.json()
     assert result["is_offensive"] == True
+
+    response = client.post("/analyze", json={"text": "This is a great day!"})
+    assert response.status_code == 200
+    result = response.json()
+    assert result["is_offensive"] == False
 
 
 def test_named_entity_recognition():

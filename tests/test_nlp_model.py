@@ -28,7 +28,11 @@ def test_detect_offensive_language(nlp_model):
     assert nlp_model.detect_offensive_language(
         "This is a normal sentence.") == False
     assert nlp_model.detect_offensive_language(
-        "This is a fucking disaster!") == True
+        "You are a piece of shit!") == True
+    assert nlp_model.detect_offensive_language(
+        "I hate you and everything you stand for cunt.") == True
+    assert nlp_model.detect_offensive_language(
+        "This movie is terrible.") == False
 
 
 def test_extract_entities(nlp_model):
