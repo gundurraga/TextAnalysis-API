@@ -59,3 +59,50 @@ def test_named_entity_recognition():
     assert any(entity["name"] == "Apple Inc." for entity in result["entities"])
     assert any(entity["name"] == "Cupertino" for entity in result["entities"])
     assert any(entity["name"] == "California" for entity in result["entities"])
+
+# New tests to add:
+
+
+def test_language_detection():
+    response = client.post("/analyze", json={"text": "こんにちは、世界！"})
+    assert response.status_code == 200
+    result = response.json()
+    assert result["language"] == "ja"
+
+
+def test_sentiment_analysis():
+    response = client.post(
+        "/analyze", json={"text": "I love this product! It's amazing."})
+    assert response.status_code == 200
+    result = response.json()
+    assert "positive" in result["sentiment"]
+    assert result["sentiment"]["positive"] > 0.5
+
+    response = client.post(
+        "/analyze", json={"text": "I hate this product. It's terrible."})
+    assert response.status_code == 200
+    result = response.json()
+    assert "negative" in result["sentiment"]
+    assert result["sentiment"]["negative"] > 0.5
+
+
+def test_text_summarization():
+    long_text = "This is a long text. " * 20 + \
+        "This is an important sentence that should be in the summary."
+    response = client.post("/analyze", json={"text": long_text})
+    assert response.status_code == 200
+    result = response.json()
+    assert len(result["summary"]) < len(long_text)
+    assert "important sentence" in result["summary"]
+
+
+def test_invalid_json():
+    response = client.post(
+        "/analyze", json={"invalid_key": "This should not work"})
+    assert response.status_code == 400
+    assert "detail" in response.json()
+
+
+def test_method_not_allowed():
+    response = client.get("/analyze")
+    assert response.status_code == 405

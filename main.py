@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 from app.services.text_analysis_service import TextAnalysisService
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
@@ -12,8 +12,9 @@ class TextRequest(BaseModel):
     text: str = Field(..., min_length=1, max_length=10000,
                       description="Text to analyze")
 
-    @validator('text')
-    def text_not_empty(cls, v):
+    @field_validator('text')
+    @classmethod
+    def text_not_empty(cls, v: str) -> str:
         if not v.strip():
             raise ValueError('Text cannot be empty or just whitespace')
         return v
