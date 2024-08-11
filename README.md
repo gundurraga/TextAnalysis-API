@@ -10,6 +10,8 @@ TextAnalysis API is a robust, Python-based API for natural language processing t
 - Named Entity Recognition
 - Text Summarization
 - Input validation and error handling
+- Performance optimization with caching
+- Health check endpoint
 
 ## Requirements
 
@@ -43,6 +45,16 @@ The API will be available at `http://localhost:8000`.
 
 ## Usage
 
+### Health Check
+
+Send a GET request to the `/health` endpoint to check the API status:
+
+```
+GET http://localhost:8000/health
+```
+
+### Text Analysis
+
 Send a POST request to the `/analyze` endpoint with your text:
 
 ```python
@@ -53,7 +65,7 @@ response = requests.post('http://localhost:8000/analyze',
 print(response.json())
 ```
 
-### Example Response
+#### Example Response
 
 ```json
 {
@@ -93,29 +105,21 @@ To run the test suite:
 pytest
 ```
 
+## Performance Optimization
+
+The API uses LRU (Least Recently Used) caching for frequently accessed results, improving response times for repeated queries.
+
 ## Limitations and Areas for Improvement
 
-While the TextAnalysis API provides useful functionality, it's important to be aware of its current limitations and areas that could be improved:
+While the TextAnalysis API provides useful functionality, it's important to be aware of its current limitations:
 
-1. Language Support: The API currently has limited support for languages other than English. Accuracy may vary significantly for non-English texts.
-
-2. Model Size and Performance: The current models used are relatively small for the sake of speed and resource efficiency. This can impact the accuracy of results, especially for more nuanced tasks.
-
-3. Context Understanding: The API processes each request independently and doesn't maintain context between requests. This limits its ability to understand context in longer conversations or documents split across multiple requests.
-
-4. Scalability: The current implementation may face challenges with high concurrent loads. Further optimization and possibly a more scalable architecture could be beneficial for production use.
-
-5. Privacy and Data Handling: The API doesn't currently implement any data retention policies or privacy features. This should be addressed for use cases involving sensitive information.
-
-6. Customization: There's currently no way for users to fine-tune models or customize the analysis for specific domains or use cases.
-
-7. Bias in Models: Like many NLP models, our current implementation may exhibit biases present in its training data. This is particularly relevant for sentiment analysis and offensive language detection.
-
-8. Limited Offensive Language Detection: The current implementation of offensive language detection is basic and may miss nuanced or context-dependent offensive content.
-
-9. Summarization Limitations: The text summarization feature is currently based on simple statistical methods and may not capture the most important information for all types of texts.
-
-10. Lack of Confidence Scores: Apart from sentiment analysis, other features don't provide confidence scores, which could be useful for users to gauge the reliability of the results.
+1. Language Support: The API currently has limited support for languages other than English.
+2. Model Size and Performance: The current models used are relatively small for the sake of speed and resource efficiency.
+3. Context Understanding: The API processes each request independently and doesn't maintain context between requests.
+4. Scalability: The current implementation may face challenges with high concurrent loads.
+5. Privacy and Data Handling: The API doesn't currently implement any data retention policies or privacy features.
+6. Customization: There's currently no way for users to fine-tune models or customize the analysis for specific domains.
+7. Bias in Models: Like many NLP models, our current implementation may exhibit biases present in its training data.
 
 These limitations present opportunities for future improvements. Contributions addressing any of these areas are particularly welcome!
 
