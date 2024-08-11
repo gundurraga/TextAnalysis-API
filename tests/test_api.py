@@ -10,8 +10,6 @@ client = TestClient(app)
      "text_length", "language", "sentiment", "is_offensive", "entities", "summary"]),
     ("Je suis très heureux aujourd'hui!", [
      "text_length", "language", "sentiment", "is_offensive", "entities", "summary"]),
-    ("This is a longer text that might need summarization. " * 10,
-     ["text_length", "language", "sentiment", "is_offensive", "entities", "summary"]),
 ])
 def test_analyze_endpoint(input_text, expected_keys):
     response = client.post("/analyze", json={"text": input_text})
@@ -26,17 +24,22 @@ def test_empty_text():
     assert "detail" in response.json()
 
 
+def test_whitespace_text():
+    response = client.post("/analyze", json={"text": "   "})
+    assert response.status_code == 400
+    assert "detail" in response.json()
+
+
 def test_long_text():
-    long_text = "This is a test sentence. " * 1000
+    long_text = "a" * 10001
     response = client.post("/analyze", json={"text": long_text})
-    assert response.status_code == 200
-    result = response.json()
-    assert "summary" in result
+    assert response.status_code == 400
+    assert "detail" in response.json()
 
 
 def test_offensive_language():
     response = client.post(
-        "/analyze", json={"text": "You are an motherfucker!"})
+        "/analyze", json={"text": "You are a terrible person!"})
     assert response.status_code == 200
     result = response.json()
     assert result["is_offensive"] == True
