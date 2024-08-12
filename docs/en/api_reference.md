@@ -140,7 +140,7 @@ Response:
 The API uses standard HTTP response codes to indicate the success or failure of requests.
 
 - 200 OK: Successful request
-- 400 Bad Request: Invalid input (e.g., empty text, text too long)
+- 400 Bad Request: Invalid input (e.g., empty text, text too long, invalid JSON)
 - 500 Internal Server Error: Unexpected server-side errors
 
 Error responses include a JSON body with a `detail` field explaining the error.
@@ -152,6 +152,8 @@ Example error response:
   "detail": "Text cannot be empty or just whitespace"
 }
 ```
+
+Note: Invalid JSON payloads or requests with missing required fields will result in a 400 Bad Request response.
 
 ## Rate Limiting
 
