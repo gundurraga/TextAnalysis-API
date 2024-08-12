@@ -1,0 +1,241 @@
+{
+  "text_1_analyze": {
+    "text_length": 123,
+    "language": "en",
+    "sentiment": {
+      "positive": 0.9978469610214233
+    },
+    "is_offensive": true,
+    "entities": [
+      {
+        "name": "English",
+        "type": "LANGUAGE"
+      }
+    ],
+    "summary": "The quick brown fox jumps over the lazy dog. This pangram contains every letter of the English alphabet. Damn, that's cool!"
+  },
+  "text_1_topics": {
+    "topics": [
+      {
+        "topic": "0.091*\"alphabet\" + 0.091*\"quick\" + 0.091*\"english\" + 0.091*\"letter\" + 0.091*\"brown\" + 0.091*\"contains\" + 0.091*\"cool\" + 0.091*\"damn\" + 0.091*\"lazy\" + 0.091*\"jumps\"",
+        "score": 0.016697093844413757
+      },
+      {
+        "topic": "0.091*\"brown\" + 0.091*\"contains\" + 0.091*\"alphabet\" + 0.091*\"cool\" + 0.091*\"lazy\" + 0.091*\"quick\" + 0.091*\"pangram\" + 0.091*\"damn\" + 0.091*\"english\" + 0.091*\"jumps\"",
+        "score": 0.016697095707058907
+      },
+      {
+        "topic": "0.100*\"damn\" + 0.099*\"quick\" + 0.096*\"pangram\" + 0.095*\"jumps\" + 0.092*\"letter\" + 0.090*\"contains\" + 0.090*\"english\" + 0.088*\"brown\" + 0.086*\"cool\" + 0.083*\"lazy\"",
+        "score": 0.93277508020401
+      },
+      {
+        "topic": "0.091*\"alphabet\" + 0.091*\"contains\" + 0.091*\"cool\" + 0.091*\"jumps\" + 0.091*\"english\" + 0.091*\"letter\" + 0.091*\"brown\" + 0.091*\"pangram\" + 0.091*\"damn\" + 0.091*\"quick\"",
+        "score": 0.016697095707058907
+      },
+      {
+        "topic": "0.102*\"alphabet\" + 0.099*\"lazy\" + 0.097*\"cool\" + 0.095*\"brown\" + 0.092*\"english\" + 0.092*\"contains\" + 0.090*\"letter\" + 0.086*\"jumps\" + 0.085*\"pangram\" + 0.082*\"quick\"",
+        "score": 0.017133666202425957
+      }
+    ]
+  },
+  "text_2_analyze": {
+    "text_length": 630,
+    "language": "en",
+    "sentiment": {
+      "positive": 0.998738706111908
+    },
+    "is_offensive": false,
+    "entities": [
+      {
+        "name": "Artificial Intelligence (AI",
+        "type": "ORG"
+      },
+      {
+        "name": "Natural Language Processing",
+        "type": "ORG"
+      },
+      {
+        "name": "NLP",
+        "type": "ORG"
+      },
+      {
+        "name": "AI",
+        "type": "ORG"
+      },
+      {
+        "name": "AI",
+        "type": "ORG"
+      },
+      {
+        "name": "AI",
+        "type": "ORG"
+      }
+    ],
+    "summary": "Machine learning algorithms, neural networks, and deep learning models are at the forefront of this technological advancement. Natural Language Processing (NLP) enables machines to understand and generate human language, while computer vision allows AI systems to interpret and analyze visual information from the world. The ethical implications of AI, including bias in algorithms and the potential for job displacement, are subjects of ongoing debate."
+  },
+  "text_2_topics": {
+    "topics": [
+      {
+        "topic": "0.039*\"learning\" + 0.036*\"algorithms\" + 0.031*\"language\" + 0.022*\"subjects\" + 0.022*\"natural\" + 0.022*\"artificial\" + 0.022*\"machines\" + 0.022*\"ongoing\" + 0.022*\"generate\" + 0.022*\"evolve\"",
+        "score": 0.9842040538787842
+      }
+    ]
+  },
+  "text_3_analyze": {
+    "text_length": 416,
+    "language": "es",
+    "sentiment": {
+      "negative": 0.9541184902191162
+    },
+    "is_offensive": false,
+    "entities": [
+      {
+        "name": "El cambio",
+        "type": "ORG"
+      },
+      {
+        "name": "ser\u00e1n catastr\u00f3ficas",
+        "type": "PERSON"
+      },
+      {
+        "name": "Aumento",
+        "type": "GPE"
+      },
+      {
+        "name": "del mar",
+        "type": "PERSON"
+      },
+      {
+        "name": "La situaci\u00f3n es",
+        "type": "PERSON"
+      },
+      {
+        "name": "Necesitamos",
+        "type": "PERSON"
+      },
+      {
+        "name": "inmediata de los gobiernos",
+        "type": "ORG"
+      },
+      {
+        "name": "las empresas",
+        "type": "ORG"
+      },
+      {
+        "name": "el desastre",
+        "type": "ORG"
+      }
+    ],
+    "summary": "El cambio clim\u00e1tico es una crisis mundial que afecta a todos los pa\u00edses. Los cient\u00edficos advierten que si no reducimos dr\u00e1sticamente las emisiones de gases de efecto invernadero, las consecuencias ser\u00e1n catastr\u00f3ficas. \u00a1La situaci\u00f3n es una mierda! Necesitamos acci\u00f3n inmediata de los gobiernos y las empresas para evitar el desastre."
+  },
+  "text_3_topics": {
+    "topics": [
+      {
+        "topic": "0.031*\"acci\u00f3n\" + 0.031*\"para\" + 0.031*\"cient\u00edficos\" + 0.031*\"necesitamos\" + 0.031*\"mierda\" + 0.030*\"empresas\" + 0.030*\"efecto\" + 0.030*\"clim\u00e1ticos\" + 0.030*\"advierten\" + 0.030*\"nivel\"",
+        "score": 0.9776068925857544
+      }
+    ]
+  },
+  "text_4_analyze": {
+    "text_length": 118,
+    "language": "fr",
+    "sentiment": {
+      "negative": 0.6951894760131836
+    },
+    "is_offensive": false,
+    "entities": [
+      {
+        "name": "Merde",
+        "type": "PERSON"
+      },
+      {
+        "name": "Le fran\u00e7ais est",
+        "type": "FAC"
+      },
+      {
+        "name": "mais difficile",
+        "type": "PERSON"
+      },
+      {
+        "name": "un",
+        "type": "ORG"
+      }
+    ],
+    "summary": "Merde alors ! Le fran\u00e7ais est une langue magnifique mais difficile \u00e0 apprendre. Les conjugaisons sont un vrai bordel !"
+  },
+  "text_4_topics": {
+    "topics": [
+      {
+        "topic": "0.083*\"langue\" + 0.083*\"vrai\" + 0.083*\"difficile\" + 0.083*\"merde\" + 0.083*\"fran\u00e7ais\" + 0.083*\"mais\" + 0.083*\"bordel\" + 0.083*\"conjugaisons\" + 0.083*\"magnifique\" + 0.083*\"alors\"",
+        "score": 0.015405864454805851
+      },
+      {
+        "topic": "0.092*\"sont\" + 0.089*\"vrai\" + 0.087*\"merde\" + 0.086*\"langue\" + 0.084*\"conjugaisons\" + 0.082*\"difficile\" + 0.081*\"alors\" + 0.081*\"apprendre\" + 0.081*\"magnifique\" + 0.080*\"fran\u00e7ais\"",
+        "score": 0.01550036109983921
+      },
+      {
+        "topic": "0.086*\"bordel\" + 0.085*\"mais\" + 0.084*\"fran\u00e7ais\" + 0.084*\"magnifique\" + 0.084*\"apprendre\" + 0.084*\"alors\" + 0.084*\"difficile\" + 0.083*\"conjugaisons\" + 0.082*\"langue\" + 0.082*\"merde\"",
+        "score": 0.9382820129394531
+      },
+      {
+        "topic": "0.083*\"magnifique\" + 0.083*\"mais\" + 0.083*\"conjugaisons\" + 0.083*\"sont\" + 0.083*\"alors\" + 0.083*\"fran\u00e7ais\" + 0.083*\"difficile\" + 0.083*\"langue\" + 0.083*\"merde\" + 0.083*\"bordel\"",
+        "score": 0.015405857004225254
+      },
+      {
+        "topic": "0.083*\"mais\" + 0.083*\"merde\" + 0.083*\"fran\u00e7ais\" + 0.083*\"alors\" + 0.083*\"conjugaisons\" + 0.083*\"magnifique\" + 0.083*\"difficile\" + 0.083*\"langue\" + 0.083*\"sont\" + 0.083*\"bordel\"",
+        "score": 0.015405866317451
+      }
+    ]
+  },
+  "text_5_analyze": {
+    "text_length": 477,
+    "language": "pt",
+    "sentiment": {
+      "negative": 0.9860678315162659
+    },
+    "is_offensive": false,
+    "entities": [
+      {
+        "name": "da cultura de qualquer",
+        "type": "PERSON"
+      },
+      {
+        "name": "Brasil",
+        "type": "PERSON"
+      },
+      {
+        "name": "feijoada",
+        "type": "ORG"
+      },
+      {
+        "name": "It\u00e1lia",
+        "type": "GPE"
+      },
+      {
+        "name": "della cucina italiana",
+        "type": "ORG"
+      },
+      {
+        "name": "La pasta al dente",
+        "type": "PERSON"
+      },
+      {
+        "name": "un",
+        "type": "ORG"
+      },
+      {
+        "name": "Mangiare \u00e8 una gioia",
+        "type": "PERSON"
+      }
+    ],
+    "summary": "No Brasil, a feijoada \u00e9 um prato ic\u00f4nico que reflete a mistura de influ\u00eancias africanas, ind\u00edgenas e portuguesas. La pasta al dente, condita con sugo di pomodoro fresco e basilico, \u00e8 un piatto semplice ma delizioso. Porca miseria, ora ho fame! A diversidade gastron\u00f4mica do mundo \u00e9 uma das coisas mais incr\u00edveis que temos."
+  },
+  "text_5_topics": {
+    "topics": [
+      {
+        "topic": "0.037*\"pasta\" + 0.025*\"it\u00e1lia\" + 0.025*\"miseria\" + 0.024*\"sugo\" + 0.024*\"della\" + 0.024*\"cucina\" + 0.024*\"semplice\" + 0.024*\"cultura\" + 0.024*\"cuore\" + 0.024*\"coisas\"",
+        "score": 0.982332706451416
+      }
+    ]
+  }
+}
