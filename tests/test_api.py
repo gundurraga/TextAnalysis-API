@@ -16,6 +16,12 @@ def test_analyze_endpoint(input_text, expected_keys):
     assert response.status_code == 200
     result = response.json()
     assert all(key in result for key in expected_keys)
+    assert isinstance(result["text_length"], int)
+    assert isinstance(result["language"], str)
+    assert isinstance(result["sentiment"], dict)
+    assert isinstance(result["is_offensive"], bool)
+    assert isinstance(result["entities"], list)
+    assert isinstance(result["summary"], str)
 
 
 def test_empty_text():
@@ -60,8 +66,6 @@ def test_named_entity_recognition():
     assert any(entity["name"] == "Cupertino" for entity in result["entities"])
     assert any(entity["name"] == "California" for entity in result["entities"])
 
-# New tests to add:
-
 
 def test_language_detection():
     response = client.post("/analyze", json={"text": "こんにちは、世界！"})
@@ -99,10 +103,16 @@ def test_text_summarization():
 def test_invalid_json():
     response = client.post(
         "/analyze", json={"invalid_key": "This should not work"})
-    assert response.status_code == 400
+    assert response.status_code == 400  # Bad Request
     assert "detail" in response.json()
 
 
 def test_method_not_allowed():
     response = client.get("/analyze")
     assert response.status_code == 405
+
+
+def test_health_endpoint():
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json() == {"status": "healthy"}
