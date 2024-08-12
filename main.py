@@ -16,7 +16,23 @@ text_analysis_service = TextAnalysisService()
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc):
     return JSONResponse(
+        status_code=422,
+        content={"detail": str(exc)},
+    )
+
+
+@app.exception_handler(InputValidationError)
+async def input_validation_exception_handler(request, exc):
+    return JSONResponse(
         status_code=400,
+        content={"detail": str(exc)},
+    )
+
+
+@app.exception_handler(AnalysisError)
+async def analysis_exception_handler(request, exc):
+    return JSONResponse(
+        status_code=500,
         content={"detail": str(exc)},
     )
 
@@ -33,15 +49,6 @@ async def health_check():
 async def analyze_text(request: TextRequest):
     """
     Analyze the given text and return various linguistic insights.
-
-    Args:
-        request (TextRequest): The request body containing the text to analyze.
-
-    Returns:
-        dict: A dictionary containing analysis results.
-
-    Raises:
-        HTTPException: 400 for invalid input, 500 for unexpected errors.
     """
     try:
         return text_analysis_service.analyze_text(request.text)
