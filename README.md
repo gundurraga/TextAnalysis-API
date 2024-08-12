@@ -1,6 +1,6 @@
 # TextAnalysis API
 
-TextAnalysis API is a robust, Python-based API for natural language processing tasks. It provides endpoints for text analysis including language detection, sentiment analysis, offensive language detection, named entity recognition, and text summarization.
+TextAnalysis API is a robust, Python-based API for natural language processing tasks. It provides endpoints for text analysis including language detection, sentiment analysis, offensive language detection, named entity recognition, text summarization, and topic extraction.
 
 ## Features
 
@@ -9,6 +9,7 @@ TextAnalysis API is a robust, Python-based API for natural language processing t
 - Offensive Language Detection
 - Named Entity Recognition
 - Text Summarization
+- Topic Extraction
 - Input validation and error handling
 - Performance optimization with caching
 - Health check endpoint
@@ -55,43 +56,27 @@ GET http://localhost:8000/health
 
 ### Text Analysis
 
-Send a POST request to the `/analyze` endpoint with your text:
+Send a POST request to the `/v1/analyze` endpoint with your text:
 
 ```python
 import requests
 
-response = requests.post('http://localhost:8000/analyze',
+response = requests.post('http://localhost:8000/v1/analyze',
                          json={'text': 'Your text here'})
 print(response.json())
 ```
 
-#### Example Response
+### Topic Extraction
 
-```json
-{
-  "text_length": 13,
-  "language": "en",
-  "sentiment": { "positive": 0.9998 },
-  "is_offensive": false,
-  "entities": [{ "name": "Your", "type": "PRON" }],
-  "summary": "Your text here"
-}
+Send a POST request to the `/v1/extract_topics` endpoint with your text:
+
+```python
+import requests
+
+response = requests.post('http://localhost:8000/v1/extract_topics',
+                         json={'text': 'Your text here'})
+print(response.json())
 ```
-
-### Input Constraints
-
-- The input text must be between 1 and 10,000 characters long.
-- Empty strings or strings containing only whitespace are not allowed.
-
-## Error Handling
-
-The API returns appropriate HTTP status codes for different scenarios:
-
-- 200: Successful analysis
-- 400: Bad request (e.g., empty input, input too long)
-- 500: Unexpected server error
-
-Error responses include a JSON body with a `detail` field explaining the error.
 
 ## API Documentation
 
@@ -142,3 +127,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - FastAPI for the excellent API framework
 - Hugging Face for transformer models
 - spaCy for NLP tools
+- Gensim for topic modeling
