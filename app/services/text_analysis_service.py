@@ -1,3 +1,5 @@
+# File: app/services/text_analysis_service.py
+
 from typing import Dict, Any
 from ..models.nlp_model import NLPModel
 import logging
@@ -52,3 +54,16 @@ class TextAnalysisService:
             logger.error(f"Unexpected error analyzing text: {str(e)}")
             raise AnalysisError(
                 "An unexpected error occurred during text analysis")
+
+    def extract_topics(self, text: str) -> Dict[str, Any]:
+        try:
+            self.validate_text(text)
+            topics = self.nlp_model.extract_topics(text)
+            return {"topics": topics}
+        except InputValidationError as e:
+            logger.warning(f"Input validation error: {str(e)}")
+            raise
+        except Exception as e:
+            logger.error(f"Unexpected error extracting topics: {str(e)}")
+            raise AnalysisError(
+                "An unexpected error occurred during topic extraction")

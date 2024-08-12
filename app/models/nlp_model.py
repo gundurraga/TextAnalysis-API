@@ -5,6 +5,7 @@ from langdetect import detect, DetectorFactory
 import spacy
 from sklearn.feature_extraction.text import TfidfVectorizer
 from functools import lru_cache
+from .topic_model import TopicModeler
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -36,6 +37,7 @@ class NLPModel:
 
             # TF-IDF Vectorizer for text summarization
             self.tfidf_vectorizer = TfidfVectorizer(stop_words='english')
+            self.topic_modeler = TopicModeler()
 
             logger.info("NLP models loaded successfully.")
         except Exception as e:
@@ -85,3 +87,16 @@ class NLPModel:
         summary = '. '.join([sentences[i].strip()
                             for i in top_sentence_indices]) + '.'
         return summary
+
+    def extract_topics(self, text: str) -> List[Dict[str, Any]]:
+        if not text.strip():
+            return []
+        try:
+            self.topic_modeler.fit([text])
+            topics = self.topic_modeler.extract_topics(text)
+
+            # Convert numpy types to native Python types
+            return [{"topic": topic, "score": float(score)} for topic, score in topics]
+        except Exception as e:
+            logger.error(f"Error extracting topics: {str(e)}")
+            return [{"topic": "error", "score": 0.0}]

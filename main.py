@@ -60,6 +60,19 @@ async def analyze_text(request: TextRequest):
     except AnalysisError as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
+@v1_router.post("/extract_topics")
+async def extract_topics(request: TextRequest):
+    """
+    Extract topics from the given text.
+    """
+    try:
+        return text_analysis_service.extract_topics(request.text)
+    except InputValidationError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except AnalysisError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Include the v1 router in the main app
 app.include_router(v1_router)
 
