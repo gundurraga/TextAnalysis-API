@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, APIRouter
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from app.services.text_analysis_service import TextAnalysisService, InputValidationError, AnalysisError
@@ -9,6 +9,9 @@ app = FastAPI(
     description="An API for various text analysis tasks including language detection, sentiment analysis, and more.",
     version="1.0.0",
 )
+
+# Create a router for v1 of the API
+v1_router = APIRouter(prefix="/v1")
 
 text_analysis_service = TextAnalysisService()
 
@@ -45,7 +48,7 @@ async def health_check():
     return {"status": "healthy"}
 
 
-@app.post("/analyze")
+@v1_router.post("/analyze")
 async def analyze_text(request: TextRequest):
     """
     Analyze the given text and return various linguistic insights.
@@ -56,6 +59,9 @@ async def analyze_text(request: TextRequest):
         raise HTTPException(status_code=400, detail=str(e))
     except AnalysisError as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# Include the v1 router in the main app
+app.include_router(v1_router)
 
 if __name__ == "__main__":
     import uvicorn
