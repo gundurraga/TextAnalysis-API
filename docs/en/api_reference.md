@@ -2,7 +2,7 @@
 
 ## Overview
 
-The TextAnalysis API provides advanced natural language processing capabilities, including language detection, sentiment analysis, offensive language detection, named entity recognition, and text summarization.
+The TextAnalysis API provides advanced natural language processing capabilities, including language detection, sentiment analysis, offensive language detection, named entity recognition, text summarization, and topic extraction.
 
 ## Base URL
 
@@ -31,7 +31,7 @@ Checks the health status of the API.
 ### Text Analysis
 
 ```http
-POST /analyze
+POST /v1/analyze
 ```
 
 Performs comprehensive analysis on the provided text.
@@ -78,59 +78,40 @@ Performs comprehensive analysis on the provided text.
   - `type`: The type of the entity (e.g., PERSON, ORG, GPE).
 - `summary`: A brief summary of the input text.
 
-#### Example
-
-Request:
+### Topic Extraction
 
 ```http
-POST /analyze
-Content-Type: application/json
-
-{
-  "text": "Apple Inc. is headquartered in Cupertino, California. The company was founded by Steve Jobs and has revolutionized the tech industry with products like the iPhone and MacBook."
-}
+POST /v1/extract_topics
 ```
 
-Response:
+Extracts topics from the provided text.
+
+#### Request Body
 
 ```json
 {
-  "text_length": 172,
-  "language": "en",
-  "sentiment": {
-    "label": "positive",
-    "score": 0.9998
-  },
-  "is_offensive": false,
-  "entities": [
-    {
-      "name": "Apple Inc.",
-      "type": "ORG"
-    },
-    {
-      "name": "Cupertino",
-      "type": "GPE"
-    },
-    {
-      "name": "California",
-      "type": "GPE"
-    },
-    {
-      "name": "Steve Jobs",
-      "type": "PERSON"
-    },
-    {
-      "name": "iPhone",
-      "type": "PRODUCT"
-    },
-    {
-      "name": "MacBook",
-      "type": "PRODUCT"
-    }
-  ],
-  "summary": "Apple Inc. is headquartered in Cupertino, California. The company was founded by Steve Jobs and has revolutionized the tech industry with products like the iPhone and MacBook."
+  "text": "String to extract topics from (1-10000 characters)"
 }
 ```
+
+#### Response
+
+```json
+{
+  "topics": [
+    {
+      "topic": string,
+      "score": float
+    }
+  ]
+}
+```
+
+#### Fields
+
+- `topics`: Array of extracted topics.
+  - `topic`: The extracted topic.
+  - `score`: Confidence score for the topic (0-1).
 
 ## Error Handling
 
@@ -138,6 +119,7 @@ The API uses standard HTTP response codes to indicate the success or failure of 
 
 - 200 OK: Successful request
 - 400 Bad Request: Invalid input (e.g., empty text, text too long, invalid JSON)
+- 422 Unprocessable Entity: Request validation error
 - 500 Internal Server Error: Unexpected server-side errors
 
 Error responses include a JSON body with a `detail` field explaining the error.
@@ -160,7 +142,7 @@ The API currently does not require authentication. For production deployments, i
 
 ## Versioning
 
-The current version of the API is v1. The version is not included in the URL path but may be in future releases.
+The current version of the API is v1, which is included in the URL path.
 
 ## Additional Notes
 
@@ -168,6 +150,7 @@ The current version of the API is v1. The version is not included in the URL pat
 - The maximum allowed length for input text is 10,000 characters.
 - The summarization feature works best with longer texts (>100 words).
 - Entity recognition may not catch all entities and can occasionally misclassify entities.
+- Topic extraction works best with longer, more diverse texts.
 
 ## Support
 
