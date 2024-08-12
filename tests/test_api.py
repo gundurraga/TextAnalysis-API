@@ -116,3 +116,40 @@ def test_health_endpoint():
     response = client.get("/health")
     assert response.status_code == 200
     assert response.json() == {"status": "healthy"}
+
+
+def test_very_short_text():
+    response = client.post("/analyze", json={"text": "Hi"})
+    assert response.status_code == 200
+    result = response.json()
+    assert result["text_length"] == 2
+    assert "language" in result
+    assert "sentiment" in result
+    assert "is_offensive" in result
+    assert "entities" in result
+    assert "summary" in result
+
+
+def test_max_length_text():
+    max_length_text = "a" * 10000
+    response = client.post("/analyze", json={"text": max_length_text})
+    assert response.status_code == 200
+    result = response.json()
+    assert result["text_length"] == 10000
+
+
+def test_mixed_language_text():
+    response = client.post(
+        "/analyze", json={"text": "Hello world. Bonjour monde. Hola mundo."})
+    assert response.status_code == 200
+    result = response.json()
+    assert "language" in result  # We don't assert a specific language as it might vary
+
+
+def test_text_with_special_characters():
+    response = client.post(
+        "/analyze", json={"text": "Hello! @#$%^&*() World 123"})
+    assert response.status_code == 200
+    result = response.json()
+    assert result["text_length"] == 26
+    assert "entities" in result
