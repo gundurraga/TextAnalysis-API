@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from app.services.text_analysis_service import TextAnalysisService
+from app.services.text_analysis_service import TextAnalysisService, InputValidationError, AnalysisError
 from app.models.api_models import TextRequest
 
 app = FastAPI(
@@ -45,11 +45,10 @@ async def analyze_text(request: TextRequest):
     """
     try:
         return text_analysis_service.analyze_text(request.text)
-    except ValueError as e:
+    except InputValidationError as e:
         raise HTTPException(status_code=400, detail=str(e))
-    except Exception as e:
-        raise HTTPException(
-            status_code=500, detail="An unexpected error occurred")
+    except AnalysisError as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     import uvicorn
