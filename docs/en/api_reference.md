@@ -10,15 +10,11 @@ The TextAnalysis API provides advanced natural language processing capabilities,
 http://localhost:8000
 ```
 
-## Authentication
-
-Currently, the API does not require authentication. (Note: Consider implementing authentication for production use.)
-
 ## Endpoints
 
 ### Health Check
 
-```
+```http
 GET /health
 ```
 
@@ -34,7 +30,7 @@ Checks the health status of the API.
 
 ### Text Analysis
 
-```
+```http
 POST /analyze
 ```
 
@@ -55,8 +51,8 @@ Performs comprehensive analysis on the provided text.
   "text_length": int,
   "language": string,
   "sentiment": {
-    "positive": float,
-    "negative": float
+    "label": string,
+    "score": float
   },
   "is_offensive": boolean,
   "entities": [
@@ -73,9 +69,9 @@ Performs comprehensive analysis on the provided text.
 
 - `text_length`: The number of characters in the input text.
 - `language`: The detected language of the text (ISO 639-1 code).
-- `sentiment`: Object containing sentiment scores.
-  - `positive`: Confidence score for positive sentiment (0-1).
-  - `negative`: Confidence score for negative sentiment (0-1).
+- `sentiment`: Object containing sentiment analysis results.
+  - `label`: Either "positive" or "negative".
+  - `score`: Confidence score for the sentiment (0-1).
 - `is_offensive`: Boolean indicating whether the text is considered offensive.
 - `entities`: Array of named entities found in the text.
   - `name`: The text of the entity.
@@ -102,7 +98,8 @@ Response:
   "text_length": 172,
   "language": "en",
   "sentiment": {
-    "positive": 0.9998
+    "label": "positive",
+    "score": 0.9998
   },
   "is_offensive": false,
   "entities": [
@@ -153,11 +150,13 @@ Example error response:
 }
 ```
 
-Note: Invalid JSON payloads or requests with missing required fields will result in a 400 Bad Request response.
-
 ## Rate Limiting
 
-Currently, there are no rate limits implemented. (Note: Consider implementing rate limiting for production use.)
+Currently, there are no rate limits implemented. For production use, consider implementing appropriate rate limiting.
+
+## Authentication
+
+The API currently does not require authentication. For production deployments, implement suitable authentication mechanisms.
 
 ## Versioning
 
@@ -165,11 +164,11 @@ The current version of the API is v1. The version is not included in the URL pat
 
 ## Additional Notes
 
-- The API is designed for use with English text. Results for non-English text may vary in accuracy.
+- The API is optimized for English text. Results for non-English text may vary in accuracy.
 - The maximum allowed length for input text is 10,000 characters.
 - The summarization feature works best with longer texts (>100 words).
 - Entity recognition may not catch all entities and can occasionally misclassify entities.
 
 ## Support
 
-For support, please open an issue on the project's GitHub repository.
+For support or to report issues, please open an issue on the project's GitHub repository.
