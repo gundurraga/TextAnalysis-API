@@ -1,6 +1,0 @@
-This is the Text Analysis API Manifest: YOU MUST FOLLOW THIS RULES.
-
--The project follows best practices in every aspect of coding, language conventions, separation of concerns, folder structure, OWASP API Security top 10, git, etc.
--Open Source Models, tools and frameworks are very good and should be enhanced.
--The goal is to provide a complete, stable, and well-tested foundation that users can easily deploy and potentially extend for their specific needs.
--Shoul commit often we good and descriptive messages that follow best practices.
