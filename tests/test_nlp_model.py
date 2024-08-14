@@ -84,32 +84,3 @@ def test_long_text_handling(nlp_model):
     entities = nlp_model.extract_entities(very_long_text)
     assert isinstance(entities, list)
     assert len(entities) == 0  # No entities should be extracted from this text
-
-
-def test_extract_topics(nlp_model):
-    text = "Machine learning is a method of data analysis that automates analytical model building. It is a branch of artificial intelligence based on the idea that systems can learn from data, identify patterns and make decisions with minimal human intervention."
-
-    topics = nlp_model.extract_topics(text)
-
-    assert isinstance(topics, list)
-    assert len(topics) > 0
-    for topic in topics:
-        assert "topic" in topic
-        assert "score" in topic
-        assert isinstance(topic["topic"], str)
-        assert isinstance(topic["score"], (float, np.float32))
-
-
-def test_extract_topics_empty_text(nlp_model):
-    topics = nlp_model.extract_topics("")
-    assert isinstance(topics, list)
-    assert len(topics) == 0
-
-
-def test_extract_topics_short_text(nlp_model):
-    text = "Short text"
-    topics = nlp_model.extract_topics(text)
-    assert isinstance(topics, list)
-    # The behavior might vary depending on your implementation
-    # You might want to adjust this assertion based on how your model handles very short texts
-    assert len(topics) >= 0

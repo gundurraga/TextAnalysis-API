@@ -5,7 +5,6 @@ from langdetect import detect, DetectorFactory
 import spacy
 from sklearn.feature_extraction.text import TfidfVectorizer
 from functools import lru_cache
-from .topic_model import TopicModeler
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -37,7 +36,6 @@ class NLPModel:
 
             # TF-IDF Vectorizer for text summarization
             self.tfidf_vectorizer = TfidfVectorizer(stop_words='english')
-            self.topic_modeler = TopicModeler()
 
             logger.info("NLP models loaded successfully.")
         except Exception as e:

@@ -3,7 +3,6 @@ import requests
 
 # Define the API endpoints
 ANALYZE_ENDPOINT = "http://localhost:8000/v1/analyze"
-TOPICS_ENDPOINT = "http://localhost:8000/v1/extract_topics"
 
 # Define test texts
 test_texts = [
@@ -33,10 +32,6 @@ def test_api_responses():
         # Test /analyze endpoint
         analyze_response = requests.post(ANALYZE_ENDPOINT, json={"text": text})
         responses[f"text_{i}_analyze"] = analyze_response.json()
-
-        # Test /extract_topics endpoint
-        topics_response = requests.post(TOPICS_ENDPOINT, json={"text": text})
-        responses[f"text_{i}_topics"] = topics_response.json()
 
     # Save responses to a JSON file
     with open("api_test_responses.json", "w") as f:

@@ -153,29 +153,3 @@ def test_text_with_special_characters():
     result = response.json()
     assert result["text_length"] == 26
     assert "entities" in result
-
-
-def test_extract_topics_endpoint():
-    response = client.post("v1/extract_topics", json={
-                           "text": "Machine learning is a method of data analysis that automates analytical model building. It is a branch of artificial intelligence based on the idea that systems can learn from data, identify patterns and make decisions with minimal human intervention."})
-    assert response.status_code == 200
-    result = response.json()
-    assert "topics" in result
-    assert isinstance(result["topics"], list)
-    assert len(result["topics"]) > 0
-    for topic in result["topics"]:
-        assert "topic" in topic
-        assert "score" in topic
-
-
-def test_extract_topics_empty_text():
-    response = client.post("v1/extract_topics", json={"text": ""})
-    assert response.status_code == 422
-    assert "detail" in response.json()
-
-
-def test_extract_topics_long_text():
-    long_text = "a" * 10001
-    response = client.post("v1/extract_topics", json={"text": long_text})
-    assert response.status_code == 422
-    assert "detail" in response.json()
